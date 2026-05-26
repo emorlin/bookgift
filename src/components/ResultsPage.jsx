@@ -1,17 +1,7 @@
 import { useLocation, useNavigate, Navigate } from 'react-router-dom'
 import Logo from './Logo'
 
-function BookCover({ coverUrl }) {
-  if (coverUrl) {
-    return (
-      <img
-        src={coverUrl}
-        alt=""
-        className="w-13 h-19 object-cover rounded-lg shadow-card shrink-0"
-      />
-    )
-  }
-
+function BookCover() {
   return (
     <div
       aria-hidden="true"
@@ -36,7 +26,7 @@ function BookCard({ book }) {
 
   return (
     <article className="bg-surface rounded-2xl shadow-card p-5 flex gap-4">
-      <BookCover coverUrl={book.coverUrl} />
+      <BookCover />
       <div className="flex flex-col flex-1 min-w-0">
         <h2 className="font-display text-[17px] leading-snug text-ink">{book.title}</h2>
         <p className="text-xs text-muted mt-0.5 font-medium">
