@@ -23,8 +23,16 @@ function BookCover({ coverUrl }) {
 }
 
 function BookCard({ book }) {
-  const bokusUrl    = `https://www.bokus.com/cgi-bin/product_search.cgi?search_word=${encodeURIComponent(book.title + ' ' + book.author)}`
-  const adlibrisUrl = `https://www.adlibris.com/se/sok?search=${encodeURIComponent(book.title + ' ' + book.author)}`
+  const q             = encodeURIComponent(book.title + ' ' + book.author)
+  const bokusUrl      = `https://www.bokus.com/cgi-bin/product_search.cgi?search_word=${q}`
+  const adlibrisUrl   = `https://www.adlibris.com/se/sok?search=${q}`
+  const akademiUrl    = `https://www.akademibokhandeln.se/search/?q=${q}`
+
+  const stores = [
+    { href: bokusUrl,    label: 'Bokus' },
+    { href: adlibrisUrl, label: 'Adlibris' },
+    { href: akademiUrl,  label: 'Akademi' },
+  ]
 
   return (
     <article className="bg-surface rounded-2xl shadow-card p-5 flex gap-4">
@@ -38,24 +46,18 @@ function BookCard({ book }) {
         </p>
         <p className="text-sm text-ink/80 mt-2 leading-relaxed">{book.reason}</p>
         <div className="flex gap-2 mt-3.5">
-          <a
-            href={bokusUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Köp ${book.title} på Bokus (öppnas i ny flik)`}
-            className="text-xs font-semibold px-3 py-1.5 border border-rule rounded-lg text-ink hover:border-primary hover:text-primary transition-colors"
-          >
-            Bokus <span aria-hidden="true">↗</span>
-          </a>
-          <a
-            href={adlibrisUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Köp ${book.title} på Adlibris (öppnas i ny flik)`}
-            className="text-xs font-semibold px-3 py-1.5 border border-rule rounded-lg text-ink hover:border-primary hover:text-primary transition-colors"
-          >
-            Adlibris <span aria-hidden="true">↗</span>
-          </a>
+          {stores.map(({ href, label }) => (
+            <a
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Köp ${book.title} på ${label} (öppnas i ny flik)`}
+              className="text-xs font-semibold px-3 py-1.5 border border-rule rounded-lg text-ink hover:border-primary hover:text-primary transition-colors"
+            >
+              {label} <span aria-hidden="true">↗</span>
+            </a>
+          ))}
         </div>
       </div>
     </article>
