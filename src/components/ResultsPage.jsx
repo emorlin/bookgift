@@ -2,20 +2,20 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate, Navigate } from 'react-router-dom'
 import Logo from './Logo'
 
-function BookCover({ isbn, title }) {
+function BookCover({ title, author }) {
   const [src, setSrc] = useState(null)
 
   useEffect(() => {
-    if (!isbn) return
-    const query = encodeURIComponent(`isbn:${isbn}`)
-    fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}&fields=items(volumeInfo/imageLinks)`)
+    if (!title) return
+    const query = encodeURIComponent(`intitle:${title} inauthor:${author}`)
+    fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=1&fields=items(volumeInfo/imageLinks)`)
       .then(r => r.json())
       .then(data => {
         const thumb = data?.items?.[0]?.volumeInfo?.imageLinks?.thumbnail
         if (thumb) setSrc(thumb.replace('http:', 'https:'))
       })
       .catch(() => {})
-  }, [isbn])
+  }, [title, author])
 
   if (src) {
     return (
@@ -43,7 +43,7 @@ function BookCard({ book }) {
 
   return (
     <article className="bg-surface rounded-2xl shadow-card p-5 flex gap-4">
-      <BookCover isbn={book.isbn} title={book.title} />
+      <BookCover title={book.title} author={book.author} />
       <div className="flex flex-col flex-1 min-w-0">
         <h2 className="font-display text-[17px] leading-snug text-ink">{book.title}</h2>
         <p className="text-xs text-muted mt-0.5 font-medium">
