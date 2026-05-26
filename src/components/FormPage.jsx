@@ -146,8 +146,8 @@ function ChipGroup({ options, value, onChange, multi = false, labelId, required 
   )
 }
 
-const inputClass = "w-full bg-surface border border-rule rounded-xl px-4 py-3 text-sm text-ink placeholder-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:border-primary transition-colors"
-const inputClassInvalid = "w-full bg-surface border border-red-400 rounded-xl px-4 py-3 text-sm text-ink placeholder-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400/40 focus-visible:border-red-500 transition-colors"
+const inputClass = "w-full bg-surface border border-rule rounded-xl px-4 py-3 text-base text-ink placeholder-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:border-primary transition-colors"
+const inputClassInvalid = "w-full bg-surface border border-red-400 rounded-xl px-4 py-3 text-base text-ink placeholder-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400/40 focus-visible:border-red-500 transition-colors"
 
 export default function FormPage() {
   const navigate = useNavigate()
