@@ -1,4 +1,4 @@
-export const config = { runtime: "edge" };
+export const config = { maxDuration: 30 };
 
 const SYSTEM_PROMPT = `Du är en erfaren bokhandlare som rekommenderar böcker som present.
 Välj verkliga, välkända böcker som faktiskt finns. Variera genre och stil.
@@ -22,21 +22,38 @@ Ge exakt 4 bokrekommendationer i detta format:
 Skriv reason på svenska. En mening. Förklara varför just denna person — inte boken generellt. Texten ska inte vara riktiad till den som ska få boken utan till den som ska köpa den. Var specifik utifrån mottagaren och relationen. Undvik generella fraser som "en bok för alla som gillar X". Var kreativ och personlig i dina rekommendationer!`;
 }
 
+async function fetchWithTimeout(url, ms = 4000) {
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), ms)
+    try {
+        const res = await fetch(url, { signal: controller.signal })
+        clearTimeout(timer)
+        return res
+    } catch {
+        clearTimeout(timer)
+        return null
+    }
+}
+
 async function fetchCover(title, author) {
     try {
         const q = encodeURIComponent(`intitle:${title} inauthor:${author}`)
-        const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${q}&maxResults=1&fields=items(volumeInfo/imageLinks)`)
-        const data = await res.json()
-        const thumb = data?.items?.[0]?.volumeInfo?.imageLinks?.thumbnail
-        if (thumb) return thumb.replace('http:', 'https:')
+        const res = await fetchWithTimeout(`https://www.googleapis.com/books/v1/volumes?q=${q}&maxResults=1&fields=items(volumeInfo/imageLinks)`)
+        if (res) {
+            const data = await res.json()
+            const thumb = data?.items?.[0]?.volumeInfo?.imageLinks?.thumbnail
+            if (thumb) return thumb.replace('http:', 'https:')
+        }
     } catch {}
 
     try {
         const q = `title=${encodeURIComponent(title)}&author=${encodeURIComponent(author)}`
-        const res = await fetch(`https://openlibrary.org/search.json?${q}&limit=1&fields=cover_i`)
-        const data = await res.json()
-        const coverId = data?.docs?.[0]?.cover_i
-        if (coverId) return `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`
+        const res = await fetchWithTimeout(`https://openlibrary.org/search.json?${q}&limit=1&fields=cover_i`)
+        if (res) {
+            const data = await res.json()
+            const coverId = data?.docs?.[0]?.cover_i
+            if (coverId) return `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`
+        }
     } catch {}
 
     return null
