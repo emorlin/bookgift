@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create *)",
+      "Bash(cp -r _tmp/. .)",
+      "Bash(rm -rf _tmp)",
+      "Bash(npm install *)",
+      "Bash(npm run *)"
+    ]
+  }
+}
