@@ -157,10 +157,11 @@ export default function FormPage() {
   const [interests, setInterests] = useState([])
   const [otherText, setOtherText] = useState('')
   const [occasion,  setOccasion]  = useState('')
-  const [freeText,  setFreeText]  = useState('')
-  const [submitted, setSubmitted] = useState(false)
-  const [loading,   setLoading]   = useState(false)
-  const [apiError,  setApiError]  = useState(null)
+  const [freeText,     setFreeText]     = useState('')
+  const [onlySwedish,  setOnlySwedish]  = useState(false)
+  const [submitted,    setSubmitted]    = useState(false)
+  const [loading,      setLoading]      = useState(false)
+  const [apiError,     setApiError]     = useState(null)
 
   const relationRef  = useRef(null)
   const giftTypeRef  = useRef(null)
@@ -202,7 +203,7 @@ export default function FormPage() {
       const res = await fetch('/api/recommend', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ relation, giftType, age, budget, interests: finalInterests, occasion, freeText }),
+        body: JSON.stringify({ relation, giftType, age, budget, interests: finalInterests, occasion, freeText, onlySwedish }),
       })
       if (!res.ok) throw new Error('Något gick fel. Försök igen.')
       const data = await res.json()
@@ -373,6 +374,18 @@ export default function FormPage() {
               className={`${inputClass} resize-none`}
             />
           </div>
+
+          <label className="flex items-center gap-3 cursor-pointer select-none group">
+            <input
+              type="checkbox"
+              checked={onlySwedish}
+              onChange={e => setOnlySwedish(e.target.checked)}
+              className="w-4 h-4 rounded border-rule accent-primary cursor-pointer"
+            />
+            <span className="text-sm text-ink group-hover:text-primary transition-colors">
+              Endast svenska titlar
+            </span>
+          </label>
 
           {/* API-fel (nätverksfel, inte valideringsfel) */}
           {apiError && (
