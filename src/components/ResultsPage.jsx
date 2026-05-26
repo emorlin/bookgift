@@ -16,7 +16,7 @@ function BookCover() {
 function BookCard({ book }) {
   const q           = encodeURIComponent(book.title + ' ' + book.author)
   const bokusUrl    = `https://www.bokus.com/cgi-bin/product_search.cgi?search_word=${q}`
-  const adlibrisUrl = `https://www.adlibris.com/se/sok?search=${q}`
+  const adlibrisUrl = `https://www.adlibris.com/se/sok?q=${q}`
   const akademiUrl  = `https://www.akademibokhandeln.se/search/?q=${q}`
   const googleUrl   = `https://books.google.com/books?q=${q}`
 
