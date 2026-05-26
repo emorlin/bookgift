@@ -23,6 +23,31 @@ Ge exakt 4 bokrekommendationer i detta format:
 Skriv reason på svenska. En mening. Förklara varför just denna person — inte boken generellt. Texten ska inte vara riktiad till den som ska få boken utan till den som ska köpa den. Var specifik utifrån mottagaren och relationen. Undvik generella fraser som "en bok för alla som gillar X". Var kreativ och personlig i dina rekommendationer!`;
 }
 
+async function fetchWithTimeout(url, ms = 4000) {
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), ms)
+    try {
+        const res = await fetch(url, { signal: controller.signal })
+        clearTimeout(timer)
+        return res
+    } catch {
+        clearTimeout(timer)
+        return null
+    }
+}
+
+async function fetchIsbn(title, author) {
+    try {
+        const q = `title=${encodeURIComponent(title)}&author=${encodeURIComponent(author)}`
+        const res = await fetchWithTimeout(`https://openlibrary.org/search.json?${q}&limit=1&fields=isbn`)
+        if (res) {
+            const data = await res.json()
+            const isbns = data?.docs?.[0]?.isbn ?? []
+            return isbns.find(i => i.length === 13) || isbns.find(i => i.length === 10) || null
+        }
+    } catch {}
+    return null
+}
 
 export default async function handler(req) {
     if (req.method !== "POST") {
@@ -86,7 +111,14 @@ export default async function handler(req) {
         });
     }
 
-    return new Response(JSON.stringify(parsed), {
+    const books = await Promise.all(
+        parsed.books.map(async book => ({
+            ...book,
+            isbn: await fetchIsbn(book.title, book.author),
+        }))
+    )
+
+    return new Response(JSON.stringify({ books }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
     });
