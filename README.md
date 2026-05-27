@@ -43,7 +43,7 @@ No sign-up required. Nothing stored. Under 30 seconds.
 
 | Feature | Description |
 |---|---|
-| **AI recommendations** | Claude Sonnet picks 4 books based on relationship, interests, gift purpose, and budget. Recommendations are personal — not generic lists |
+| **AI recommendations** | Claude picks 4 books based on relationship, interests, gift purpose, and budget. Recommendations are personal and varied — not the same famous titles every time |
 | **Personal reasoning** | Each book gets a one-sentence explanation for *why this specific person* suits the book |
 | **Buy links** | Direct search links to Amazon, Bookshop.org, and Google Books for every title |
 | **Loading animation** | Animated overlay with cycling status messages while the AI works — no blank screen |
@@ -113,7 +113,7 @@ A step indicator (progress bar) at the top shows how many required fields have b
 
 ### View 3 — Results (`/results`)
 
-Four book cards with placeholder icon, title, author, year, reasoning, and buy links. The page fades in with a smooth animation. A "Search again" button returns to the form.
+Four book cards with placeholder icon, title, author, year, reasoning, and buy links. The page fades in with a smooth animation. A "New recommendations" button re-calls the API with the same form data for a fresh set of picks. A "← New search" link below returns to the form.
 
 If the user navigates directly to `/results` without state they are redirected to `/find`.
 
@@ -127,7 +127,7 @@ If the user navigates directly to `/results` without state they are redirected t
 | What should the gift express? | Chips (pick one) | Yes | Thoughtful, Inspiring, Adventure, Nostalgic, etc. |
 | Age | Number | No | Free text, passed to the prompt |
 | Budget | Dropdown | No | Under $15 / $15–30 / $30–50 / $50+. Empty = no limit |
-| Interests | Chips (multi-select) | Yes | 21 options + "Other" with free text input |
+| Interests | Chips (multi-select, max 3) | Yes | 21 options + "Other" with free text input |
 | Occasion | Dropdown | No | Birthday, Christmas, Graduation, Appreciation, etc. |
 | Anything else about the person? | Textarea | No | Free text, max 500 characters (truncated server-side) |
 
@@ -163,9 +163,9 @@ Interests: Psychology, Philosophy.
 Occasion: Birthday.
 Budget: $15–30.
 
-Choose ONLY well-known, real books with broad sales — bestsellers, award
-winners, or classics. Prefer a well-known book in a related area over an
-obscure book in exactly the right area.
+Every book must be real and verifiable — title, author, and year must be
+accurate. Vary the picks: mix well-known titles with hidden gems and newer
+releases. Avoid recommending the same handful of famous titles every time.
 
 Give exactly 4 book recommendations in this format:
 {"books":[{"title":"...","author":"...","year":2019,"isbn":"...","reason":"..."}]}
