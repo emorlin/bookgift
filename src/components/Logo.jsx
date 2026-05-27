@@ -7,12 +7,12 @@ export default function Logo() {
   return (
     <button
       onClick={() => navigate('/')}
-      aria-label="Ge bort en bok – gå till startsidan"
+      aria-label="BookGift – go to home"
       className="flex items-center gap-2 cursor-pointer"
     >
       <BookOpen size={22} strokeWidth={2} className="text-primary shrink-0" aria-hidden="true" />
       <span className="text-sm font-semibold text-ink tracking-wide leading-none">
-        Ge bort en bok
+        BookGift
       </span>
     </button>
   )
