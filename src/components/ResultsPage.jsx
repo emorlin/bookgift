@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useLocation, useNavigate, Navigate } from 'react-router-dom'
 import { BookOpen } from 'lucide-react'
 import Logo from './Logo'
@@ -85,6 +85,8 @@ export default function ResultsPage() {
   const [loading, setLoading] = useState(false)
   const [error,   setError]   = useState(null)
 
+  useEffect(() => { window.scrollTo(0, 0) }, [])
+
   const summary = [
     interests.slice(0, 2).join(', '),
     giftType?.toLowerCase(),
@@ -103,6 +105,7 @@ export default function ResultsPage() {
       if (!res.ok) throw new Error('Something went wrong. Please try again.')
       const data = await res.json()
       setBooks(data.books)
+      window.scrollTo(0, 0)
     } catch (err) {
       setError(err.message)
     } finally {
