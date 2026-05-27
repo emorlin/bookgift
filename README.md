@@ -45,9 +45,9 @@ No sign-up required. Nothing stored. Under 30 seconds.
 |---|---|
 | **AI recommendations** | Claude picks 4 books based on relationship, interests, gift purpose, and budget. Recommendations are personal and varied — not the same famous titles every time |
 | **Personal reasoning** | Each book gets a one-sentence explanation for *why this specific person* suits the book |
-| **Book covers** | Cover art fetched server-side from Google Books API. Falls back to a styled placeholder icon if no cover is found |
-| **Buy links** | Direct search links to Amazon, Bookshop.org, and Google Books for every title |
-| **Loading animation** | Animated overlay with cycling status messages while the AI works — no blank screen |
+| **Book covers** | Cover art and ISBN fetched server-side from Google Books API. Falls back to a styled placeholder icon if no cover is found |
+| **Buy links** | Links to Amazon, Bookshop.org, and Google Books. Uses ISBN for exact matches when available, falls back to title + author search |
+| **Loading animation** | Animated overlay with cycling status messages — shown both on initial search and when re-fetching new recommendations |
 | **No database** | No accounts, no storage, no cookies. Everything lives in React Router location state and disappears on close |
 | **Accessibility** | WCAG 2.1 AA — semantic HTML, aria attributes, focus management, error messages with `role="alert"` |
 
@@ -64,7 +64,7 @@ No sign-up required. Nothing stored. Under 30 seconds.
 | Lucide React | — | SVG icons in nav, buttons, and loading animation |
 | Vercel Edge Functions | — | Serverless API handler for Claude calls |
 | Claude | Haiku 4.5 / Sonnet 4.6 | AI recommendations (configurable) |
-| Google Books API | — | Book cover images, fetched server-side |
+| Google Books API | — | Book covers and ISBN, fetched server-side |
 | Vercel | — | Hosting and automatic CI/CD from GitHub |
 
 ---
@@ -243,13 +243,13 @@ The results page fades in with `animate-page-enter` (opacity + translateY, 0.45s
 
 ## Buy links
 
-All buy links are search links based on title + author. No stock data or price checks are performed.
+Buy links use ISBN when available (returned by Google Books API), falling back to a title + author search query. No stock data or price checks are performed.
 
-| Store | URL format |
-|---|---|
-| Amazon | `amazon.com/s?k={q}` |
-| Bookshop.org | `bookshop.org/search?keywords={q}` |
-| Google Books | `books.google.com/books?q={q}` |
+| Store | With ISBN | Without ISBN |
+|---|---|---|
+| Amazon | `amazon.com/s?k={isbn}` | `amazon.com/s?k={title+author}` |
+| Bookshop.org | `bookshop.org/search?keywords={isbn}` | `bookshop.org/search?keywords={title+author}` |
+| Google Books | `books.google.com/books?isbn={isbn}` | `books.google.com/books?q={title+author}` |
 
 ---
 
@@ -402,8 +402,9 @@ bookgift/
 ├── src/
 │   ├── components/
 │   │   ├── LandingPage.jsx   # View 1: tagline, CTA, three-step explanation
-│   │   ├── FormPage.jsx      # View 2: form, validation, loading overlay
+│   │   ├── FormPage.jsx      # View 2: form, validation
 │   │   ├── ResultsPage.jsx   # View 3: book cards with buy links
+│   │   ├── LoadingOverlay.jsx # Shared loading overlay (form + re-fetch)
 │   │   └── Logo.jsx          # Lucide BookOpen icon + logotype text
 │   ├── App.jsx               # BrowserRouter, routes, skip-nav link
 │   ├── index.css             # Tailwind v4 @theme tokens + animations
