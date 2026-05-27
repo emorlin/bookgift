@@ -36,16 +36,15 @@ Write reason in English. One sentence. Explain why this specific person — not 
 
 async function fetchCover(title, author) {
     try {
-        const q = `title=${encodeURIComponent(title)}&author=${encodeURIComponent(author)}`
-        const res = await fetch(`https://openlibrary.org/search.json?${q}&limit=1&fields=isbn,cover_i`)
+        const q = encodeURIComponent(`intitle:${title} inauthor:${author}`)
+        const key = process.env.GOOGLE_BOOKS_API_KEY
+        const res = await fetch(
+            `https://www.googleapis.com/books/v1/volumes?q=${q}&maxResults=1&fields=items(volumeInfo/imageLinks/thumbnail)&key=${key}`
+        )
         if (!res.ok) return null
         const data = await res.json()
-        const doc = data?.docs?.[0]
-        const isbn    = doc?.isbn?.[0]
-        const coverId = doc?.cover_i
-        if (isbn)    return `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg?default=false`
-        if (coverId) return `https://covers.openlibrary.org/b/id/${coverId}-M.jpg?default=false`
-        return null
+        const thumb = data?.items?.[0]?.volumeInfo?.imageLinks?.thumbnail
+        return thumb ? thumb.replace('http:', 'https:') : null
     } catch {
         return null
     }
