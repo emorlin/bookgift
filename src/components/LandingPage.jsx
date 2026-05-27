@@ -2,9 +2,9 @@ import { useNavigate } from 'react-router-dom'
 import Logo from './Logo'
 
 const STEPS = [
-  { n: '1', label: 'Berätta om personen' },
-  { n: '2', label: 'AI väljer böcker' },
-  { n: '3', label: 'Köp direkt' },
+  { n: '1', label: 'Describe the person' },
+  { n: '2', label: 'AI picks books' },
+  { n: '3', label: 'Buy instantly' },
 ]
 
 export default function LandingPage() {
@@ -19,21 +19,21 @@ export default function LandingPage() {
         </div>
 
         <h1 className="font-display text-5xl leading-[1.1] text-ink mb-5">
-          Rätt bok.<br />Till rätt person.
+          The right book.<br />For the right person.
         </h1>
 
         <p className="text-[17px] text-muted leading-relaxed mb-10 max-w-sm mx-auto">
-          Berätta om den du köper till — vi hittar en bok de faktiskt kommer läsa.
+          Tell us about the person you're buying for — we'll find a book they'll actually read.
         </p>
 
         <button
           onClick={() => navigate('/hitta')}
           className="bg-primary hover:bg-[#874819] active:bg-[#6E3A14] text-white text-base font-semibold px-9 py-4 rounded-2xl transition-colors duration-150 cursor-pointer shadow-card-lg"
         >
-          Hitta en bok <span aria-hidden="true">→</span>
+          Find a book <span aria-hidden="true">→</span>
         </button>
 
-        <ol aria-label="Så här fungerar det" className="mt-14 grid grid-cols-3 gap-3 list-none">
+        <ol aria-label="How it works" className="mt-14 grid grid-cols-3 gap-3 list-none">
           {STEPS.map(({ n, label }) => (
             <li key={n} className="bg-surface rounded-2xl p-5 shadow-card">
               <div aria-hidden="true" className="w-7 h-7 rounded-full bg-primary-light text-primary font-bold text-xs flex items-center justify-center mx-auto mb-3">
@@ -44,12 +44,12 @@ export default function LandingPage() {
           ))}
         </ol>
 
-        <ul aria-label="Fördelar" className="mt-10 pt-8 border-t border-rule flex items-center justify-center gap-7 text-[13px] text-muted list-none">
-          <li>Ingen registrering</li>
+        <ul aria-label="Benefits" className="mt-10 pt-8 border-t border-rule flex items-center justify-center gap-7 text-[13px] text-muted list-none">
+          <li>No sign-up</li>
           <li aria-hidden="true" className="w-px h-3 bg-rule" />
-          <li>Inget sparas</li>
+          <li>Nothing stored</li>
           <li aria-hidden="true" className="w-px h-3 bg-rule" />
-          <li>30 sekunder</li>
+          <li>30 seconds</li>
         </ul>
 
         <div className="mt-8 flex justify-center">

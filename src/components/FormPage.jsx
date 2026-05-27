@@ -4,11 +4,11 @@ import { BookOpen } from 'lucide-react'
 import Logo from './Logo'
 
 const LOADING_MESSAGES = [
-  'Söker bland böcker…',
-  'AI väljer ut favoriter…',
-  'Matchar med dina intressen…',
-  'Hittar rätt titlar…',
-  'Nästan klart…',
+  'Searching books…',
+  'AI picking favourites…',
+  'Matching your interests…',
+  'Finding the right titles…',
+  'Almost done…',
 ]
 
 function LoadingOverlay() {
@@ -42,18 +42,18 @@ function LoadingOverlay() {
           <p key={msgIndex} className="font-display text-2xl text-ink animate-fade-up">
             {LOADING_MESSAGES[msgIndex]}
           </p>
-          <p className="text-sm text-muted mt-2">AI arbetar på saken</p>
+          <p className="text-sm text-muted mt-2">AI is on it</p>
         </div>
       </div>
     </div>
   )
 }
 
-const RELATIONS  = ['Partner', 'Förälder', 'Vän', 'Kollega', 'Syskon', 'Barn']
-const GIFT_TYPES = ['Omtänksamhet', 'Imponerande', 'Rolig', 'Praktisk', 'Samtalsstartare', 'Inspiration', 'Äventyr', 'Nostalgi', 'Nyfikenhet', 'Kärlek']
-const INTERESTS  = ['Historia', 'Psykologi', 'Thriller', 'Filosofi', 'Humor', 'Biografi', 'Natur', 'Ekonomi', 'Skönlitteratur', 'Sport', 'Krim', 'Romantik', 'Fantasy', 'Vetenskap', 'Resor', 'Konst', 'Politik', 'Hälsa', 'Sci-fi', 'Musik', 'Självhjälp']
-const BUDGETS    = ['Under 150 kr', '150–300 kr', '300–500 kr', '500+ kr']
-const OCCASIONS  = ['Födelsedag', 'Jul', 'Student', 'Uppskattning', 'Avtack', 'Annat']
+const RELATIONS  = ['Partner', 'Parent', 'Friend', 'Colleague', 'Sibling', 'Child']
+const GIFT_TYPES = ['Thoughtful', 'Impressive', 'Funny', 'Practical', 'Conversation starter', 'Inspiring', 'Adventure', 'Nostalgic', 'Curious', 'Romantic']
+const INTERESTS  = ['History', 'Psychology', 'Thriller', 'Philosophy', 'Humour', 'Biography', 'Nature', 'Business', 'Fiction', 'Sports', 'Crime', 'Romance', 'Fantasy', 'Science', 'Travel', 'Art', 'Politics', 'Health', 'Sci-fi', 'Music', 'Self-help']
+const BUDGETS    = ['Under $15', '$15–30', '$30–50', '$50+']
+const OCCASIONS  = ['Birthday', 'Christmas', 'Graduation', 'Appreciation', 'Farewell', 'Other']
 
 const TOTAL_STEPS = 3
 
@@ -64,7 +64,7 @@ function ProgressBar({ step }) {
       aria-valuenow={step}
       aria-valuemin={0}
       aria-valuemax={TOTAL_STEPS}
-      aria-label={`Steg ${step} av ${TOTAL_STEPS} ifyllda`}
+      aria-label={`Step ${step} of ${TOTAL_STEPS} completed`}
       className="flex gap-1.5 mb-9"
     >
       {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
@@ -87,7 +87,7 @@ function FieldLabel({ id, children, required }) {
       {required && (
         <>
           <span aria-hidden="true" className="text-primary ml-1">*</span>
-          <span className="sr-only"> (obligatorisk)</span>
+          <span className="sr-only"> (required)</span>
         </>
       )}
     </p>
@@ -160,7 +160,6 @@ export default function FormPage() {
   const [otherText, setOtherText] = useState('')
   const [occasion,  setOccasion]  = useState('')
   const [freeText,     setFreeText]     = useState('')
-  const [onlySwedish,  setOnlySwedish]  = useState(false)
   const [submitted,    setSubmitted]    = useState(false)
   const [loading,      setLoading]      = useState(false)
   const [apiError,     setApiError]     = useState(null)
@@ -175,9 +174,9 @@ export default function FormPage() {
 
   // Beräkna fel — visas bara efter att användaren försökt skicka
   const errors = {
-    relation:  !relation            ? 'Välj vem du köper till.'           : null,
-    giftType:  !giftType            ? 'Välj vad presenten ska kommunicera.' : null,
-    interests: interests.length < 1 ? 'Välj minst ett intresse.'           : null,
+    relation:  !relation            ? 'Select who you are buying for.'        : null,
+    giftType:  !giftType            ? 'Select what the gift should express.'  : null,
+    interests: interests.length < 1 ? 'Select at least one interest.'         : null,
   }
   const visibleErrors = submitted ? errors : { relation: null, giftType: null, interests: null }
   const hasErrors = Object.values(visibleErrors).some(Boolean)
@@ -199,15 +198,15 @@ export default function FormPage() {
 
     setLoading(true)
     const otherParsed    = otherText.split(',').map(s => s.trim()).filter(Boolean)
-    const finalInterests = [...interests.filter(i => i !== 'Annat'), ...otherParsed]
+    const finalInterests = [...interests.filter(i => i !== 'Other'), ...otherParsed]
 
     try {
       const res = await fetch('/api/recommend', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ relation, giftType, age, budget, interests: finalInterests, occasion, freeText, onlySwedish }),
+        body: JSON.stringify({ relation, giftType, age, budget, interests: finalInterests, occasion, freeText }),
       })
-      if (!res.ok) throw new Error('Något gick fel. Försök igen.')
+      if (!res.ok) throw new Error('Something went wrong. Please try again.')
       const data = await res.json()
       navigate('/resultat', { state: { books: data.books, relation, giftType, interests: finalInterests, budget } })
     } catch (err) {
@@ -236,7 +235,7 @@ export default function FormPage() {
             role="alert"
             className="mb-6 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700"
           >
-            <p className="font-semibold mb-1">Rätta till följande för att fortsätta:</p>
+            <p className="font-semibold mb-1">Please fix the following to continue:</p>
             <ul className="list-disc list-inside space-y-0.5">
               {Object.values(visibleErrors).filter(Boolean).map((msg, i) => (
                 <li key={i}>{msg}</li>
@@ -248,12 +247,12 @@ export default function FormPage() {
         <form
           onSubmit={handleSubmit}
           noValidate
-          aria-label="Hitta en bokpresent"
+          aria-label="Find a book gift"
           className="flex flex-col gap-7"
         >
 
           <div>
-            <FieldLabel id="relation-label" required>Vem köper du till?</FieldLabel>
+            <FieldLabel id="relation-label" required>Who are you buying for?</FieldLabel>
             <ChipGroup
               options={RELATIONS}
               value={relation}
@@ -268,7 +267,7 @@ export default function FormPage() {
           </div>
 
           <div>
-            <FieldLabel id="gifttype-label" required>Vad ska presenten kommunicera?</FieldLabel>
+            <FieldLabel id="gifttype-label" required>What should the gift express?</FieldLabel>
             <ChipGroup
               options={GIFT_TYPES}
               value={giftType}
@@ -285,7 +284,7 @@ export default function FormPage() {
           <div className="flex gap-4">
             <div className="flex-1">
               <label htmlFor="age" className="block text-[13px] font-semibold text-ink tracking-wide uppercase mb-2.5">
-                Ålder
+                Age
               </label>
               <input
                 id="age"
@@ -294,7 +293,7 @@ export default function FormPage() {
                 max="120"
                 value={age}
                 onChange={e => setAge(e.target.value)}
-                placeholder="t.ex. 42"
+                placeholder="e.g. 42"
                 className={inputClass}
               />
             </div>
@@ -309,16 +308,16 @@ export default function FormPage() {
                 onChange={e => setBudget(e.target.value)}
                 className={inputClass}
               >
-                <option value="">Spelar ingen roll</option>
+                <option value="">Any budget</option>
                 {BUDGETS.map(b => <option key={b} value={b}>{b}</option>)}
               </select>
             </div>
           </div>
 
           <div>
-            <FieldLabel id="interests-label" required>Intressen</FieldLabel>
+            <FieldLabel id="interests-label" required>Interests</FieldLabel>
             <ChipGroup
-              options={[...INTERESTS, 'Annat']}
+              options={[...INTERESTS, 'Other']}
               value={interests}
               onChange={setInterests}
               multi
@@ -329,17 +328,17 @@ export default function FormPage() {
               errorId={visibleErrors.interests ? 'interests-error' : undefined}
             />
             <FieldError id="interests-error" message={visibleErrors.interests} />
-            {interests.includes('Annat') && (
+            {interests.includes('Other') && (
               <div className="mt-3">
                 <label htmlFor="other-interests" className="sr-only">
-                  Ange egna intressen, kommaseparerade
+                  Enter your own interests, comma-separated
                 </label>
                 <input
                   id="other-interests"
                   type="text"
                   value={otherText}
                   onChange={e => setOtherText(e.target.value)}
-                  placeholder="T.ex. matlagning, segling, brädspel"
+                  placeholder="e.g. cooking, sailing, board games"
                   className={inputClass}
                   autoFocus
                 />
@@ -349,7 +348,7 @@ export default function FormPage() {
 
           <div>
             <label htmlFor="occasion" className="block text-[13px] font-semibold text-ink tracking-wide uppercase mb-2.5">
-              Tillfälle
+              Occasion
             </label>
             <select
               id="occasion"
@@ -357,39 +356,27 @@ export default function FormPage() {
               onChange={e => setOccasion(e.target.value)}
               className={inputClass}
             >
-              <option value="">Valfritt</option>
+              <option value="">Optional</option>
               {OCCASIONS.map(o => <option key={o} value={o}>{o}</option>)}
             </select>
           </div>
 
           <div>
             <label htmlFor="free-text" className="block text-[13px] font-semibold text-ink tracking-wide uppercase mb-2.5">
-              Något mer om personen?{' '}
-              <span className="normal-case font-normal tracking-normal text-muted">valfritt</span>
+              Anything else about the person?{' '}
+              <span className="normal-case font-normal tracking-normal text-muted">optional</span>
             </label>
             <textarea
               id="free-text"
               value={freeText}
               onChange={e => setFreeText(e.target.value)}
               rows={3}
-              placeholder="T.ex. läser mest på kvällarna, gillar böcker som utmanar..."
+              placeholder="e.g. reads mostly in the evenings, likes books that challenge..."
               className={`${inputClass} resize-none`}
             />
           </div>
 
-          <label className="flex items-center gap-3 cursor-pointer select-none group">
-            <input
-              type="checkbox"
-              checked={onlySwedish}
-              onChange={e => setOnlySwedish(e.target.checked)}
-              className="w-4 h-4 rounded border-rule accent-primary cursor-pointer"
-            />
-            <span className="text-sm text-ink group-hover:text-primary transition-colors">
-              Jag föredrar böcker på svenska
-            </span>
-          </label>
-
-          {/* API-fel (nätverksfel, inte valideringsfel) */}
+          {/* API error (network errors, not validation errors) */}
           {apiError && (
             <div role="alert" className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
               {apiError}
@@ -403,8 +390,8 @@ export default function FormPage() {
             className="w-full bg-primary hover:bg-[#874819] active:bg-[#6E3A14] disabled:opacity-60 text-white text-base font-semibold py-4 rounded-2xl transition-colors duration-150 cursor-pointer shadow-card"
           >
             {loading
-              ? <><span aria-hidden="true">Söker böcker…</span><span className="sr-only">Söker böcker, vänligen vänta.</span></>
-              : 'Hitta böcker'
+              ? <><span aria-hidden="true">Searching…</span><span className="sr-only">Searching for books, please wait.</span></>
+              : 'Find books'
             }
           </button>
 

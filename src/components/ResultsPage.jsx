@@ -15,15 +15,13 @@ function BookCover() {
 
 function BookCard({ book }) {
   const q           = encodeURIComponent(book.title + ' ' + book.author)
-  const bokusUrl    = `https://www.bokus.com/cgi-bin/product_search.cgi?search_word=${q}`
-  const adlibrisUrl = `https://www.adlibris.com/se/sok?q=${q}`
-  const akademiUrl  = `https://www.akademibokhandeln.se/search/?q=${q}`
-  const googleUrl   = `https://books.google.com/books?q=${q}`
+  const amazonUrl      = `https://www.amazon.com/s?k=${q}`
+  const bookshopUrl    = `https://bookshop.org/search?keywords=${q}`
+  const googleUrl      = `https://books.google.com/books?q=${q}`
 
   const stores = [
-    { href: bokusUrl,    label: 'Bokus' },
-    { href: adlibrisUrl, label: 'Adlibris' },
-    { href: akademiUrl,  label: 'Akademibokhandeln' },
+    { href: amazonUrl,   label: 'Amazon' },
+    { href: bookshopUrl, label: 'Bookshop.org' },
     { href: googleUrl,   label: 'Google Books' },
   ]
 
@@ -39,7 +37,7 @@ function BookCard({ book }) {
         </p>
         <p className="text-sm text-ink/80 mt-2 leading-relaxed">{book.reason}</p>
         <div className="mt-3.5">
-          <p className="text-[11px] font-semibold text-muted uppercase tracking-wide mb-2">Hitta boken på</p>
+          <p className="text-[11px] font-semibold text-muted uppercase tracking-wide mb-2">Find it at</p>
           <div className="flex flex-wrap gap-2">
           {stores.map(({ href, label }) => (
             <a
@@ -47,7 +45,7 @@ function BookCard({ book }) {
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={`Köp ${book.title} på ${label} (öppnas i ny flik)`}
+              aria-label={`Find ${book.title} on ${label} (opens in new tab)`}
               className="text-xs font-semibold px-3 py-1.5 border border-rule rounded-lg text-ink hover:border-primary hover:text-primary transition-colors"
             >
               {label} <span aria-hidden="true">↗</span>
@@ -84,7 +82,7 @@ export default function ResultsPage() {
 
         <div className="mb-8">
           <h1 className="font-display text-3xl text-ink leading-tight">
-            4 böcker för din {relation?.toLowerCase()}
+            4 books for your {relation?.toLowerCase()}
           </h1>
           <p className="text-sm text-muted mt-1.5">{summary}</p>
         </div>
@@ -102,18 +100,18 @@ export default function ResultsPage() {
             onClick={() => navigate('/hitta')}
             className="w-full py-3.5 border border-rule rounded-2xl text-sm font-semibold text-ink hover:border-primary hover:text-primary transition-colors cursor-pointer bg-surface shadow-card"
           >
-            Sök igen
+            Search again
           </button>
         </div>
 
         <dl className="mt-10 pt-8 border-t border-rule grid grid-cols-2 gap-4 text-center">
           <div>
             <dd className="font-display text-4xl text-primary">5 832</dd>
-            <dt className="text-xs text-muted mt-1">böcker rekommenderade totalt</dt>
+            <dt className="text-xs text-muted mt-1">books recommended</dt>
           </div>
           <div>
             <dd className="font-display text-4xl text-primary">1 204</dd>
-            <dt className="text-xs text-muted mt-1">unika titlar</dt>
+            <dt className="text-xs text-muted mt-1">unique titles</dt>
           </div>
         </dl>
 
