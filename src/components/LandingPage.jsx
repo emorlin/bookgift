@@ -27,7 +27,7 @@ export default function LandingPage() {
         </p>
 
         <button
-          onClick={() => navigate('/hitta')}
+          onClick={() => navigate('/find')}
           className="bg-primary hover:bg-[#874819] active:bg-[#6E3A14] text-white text-base font-semibold px-9 py-4 rounded-2xl transition-colors duration-150 cursor-pointer shadow-card-lg"
         >
           Find a book <span aria-hidden="true">→</span>

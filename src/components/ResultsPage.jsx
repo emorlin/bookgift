@@ -62,7 +62,7 @@ export default function ResultsPage() {
   const { state } = useLocation()
   const navigate  = useNavigate()
 
-  if (!state?.books) return <Navigate to="/hitta" replace />
+  if (!state?.books) return <Navigate to="/find" replace />
 
   const { books, relation, giftType, interests, budget } = state
 
@@ -97,7 +97,7 @@ export default function ResultsPage() {
 
         <div className="mt-8">
           <button
-            onClick={() => navigate('/hitta')}
+            onClick={() => navigate('/find')}
             className="w-full py-3.5 border border-rule rounded-2xl text-sm font-semibold text-ink hover:border-primary hover:text-primary transition-colors cursor-pointer bg-surface shadow-card"
           >
             Search again

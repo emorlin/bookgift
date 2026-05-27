@@ -208,7 +208,7 @@ export default function FormPage() {
       })
       if (!res.ok) throw new Error('Something went wrong. Please try again.')
       const data = await res.json()
-      navigate('/resultat', { state: { books: data.books, relation, giftType, interests: finalInterests, budget } })
+      navigate('/results', { state: { books: data.books, relation, giftType, interests: finalInterests, budget } })
     } catch (err) {
       setApiError(err.message)
     } finally {

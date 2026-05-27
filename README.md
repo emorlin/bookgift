@@ -107,15 +107,15 @@ The app is a classic **SPA (Single-Page Application)** with no backend server or
 
 Tagline, CTA button, and a three-step explanation of the flow. Trust signals at the bottom: "No sign-up · Nothing stored · 30 seconds".
 
-### View 2 — Form (`/hitta`)
+### View 2 — Form (`/find`)
 
 A step indicator (progress bar) at the top shows how many required fields have been filled in. The form has seven fields — three required, four optional. Validation only activates when the user attempts to submit.
 
-### View 3 — Results (`/resultat`)
+### View 3 — Results (`/results`)
 
 Four book cards with placeholder icon, title, author, year, reasoning, and buy links. The page fades in with a smooth animation. A "Search again" button returns to the form.
 
-If the user navigates directly to `/resultat` without state they are redirected to `/hitta`.
+If the user navigates directly to `/results` without state they are redirected to `/find`.
 
 ---
 
@@ -363,7 +363,7 @@ Vercel picks up `vercel.json` automatically and sets up SPA rewrites:
 }
 ```
 
-The SPA rewrite is needed for React Router to work correctly on direct navigation to `/hitta` or `/resultat`.
+The SPA rewrite is needed for React Router to work correctly on direct navigation to `/find` or `/results`.
 
 ### Edge Function
 
