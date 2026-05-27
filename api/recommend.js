@@ -34,6 +34,23 @@ Write reason in English. One sentence. Explain why this specific person — not 
 }
 
 
+async function fetchCover(title, author) {
+    try {
+        const q = `title=${encodeURIComponent(title)}&author=${encodeURIComponent(author)}`
+        const res = await fetch(`https://openlibrary.org/search.json?${q}&limit=1&fields=isbn,cover_i`)
+        if (!res.ok) return null
+        const data = await res.json()
+        const doc = data?.docs?.[0]
+        const isbn    = doc?.isbn?.[0]
+        const coverId = doc?.cover_i
+        if (isbn)    return `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg?default=false`
+        if (coverId) return `https://covers.openlibrary.org/b/id/${coverId}-M.jpg?default=false`
+        return null
+    } catch {
+        return null
+    }
+}
+
 export default async function handler(req) {
     if (req.method !== "POST") {
         return new Response("Method not allowed", { status: 405 });
@@ -96,7 +113,14 @@ export default async function handler(req) {
         });
     }
 
-    return new Response(JSON.stringify(parsed), {
+    const books = await Promise.all(
+        parsed.books.map(async book => ({
+            ...book,
+            cover: await fetchCover(book.title, book.author),
+        }))
+    );
+
+    return new Response(JSON.stringify({ books }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
     });

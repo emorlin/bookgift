@@ -1,44 +1,25 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useLocation, useNavigate, Navigate } from 'react-router-dom'
 import { BookOpen } from 'lucide-react'
 import Logo from './Logo'
 
-function BookCoverPlaceholder() {
-  return (
-    <div
-      aria-hidden="true"
-      className="w-13 h-19 rounded-lg shadow-card shrink-0 flex items-center justify-center bg-linear-to-br from-[#f5e6d8] to-primary-light"
-    >
-      <BookOpen className="w-6 h-6 text-primary opacity-60" strokeWidth={1.5} />
-    </div>
-  )
-}
-
-function BookCover({ title, author }) {
-  const [src,    setSrc]    = useState(null)
+function BookCover({ title, cover }) {
   const [failed, setFailed] = useState(false)
 
-  useEffect(() => {
-    const q = `title=${encodeURIComponent(title)}&author=${encodeURIComponent(author)}`
-    fetch(`https://openlibrary.org/search.json?${q}&limit=1&fields=isbn,cover_i`)
-      .then(r => r.json())
-      .then(data => {
-        const doc = data?.docs?.[0]
-        const isbn    = doc?.isbn?.[0]
-        const coverId = doc?.cover_i
-        // ?default=false makes Open Library return 404 instead of a blank placeholder
-        if (isbn)    setSrc(`https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg?default=false`)
-        else if (coverId) setSrc(`https://covers.openlibrary.org/b/id/${coverId}-M.jpg?default=false`)
-        else setFailed(true)
-      })
-      .catch(() => setFailed(true))
-  }, [title, author])
-
-  if (failed || (!src)) return <BookCoverPlaceholder />
+  if (!cover || failed) {
+    return (
+      <div
+        aria-hidden="true"
+        className="w-13 h-19 rounded-lg shadow-card shrink-0 flex items-center justify-center bg-linear-to-br from-[#f5e6d8] to-primary-light"
+      >
+        <BookOpen className="w-6 h-6 text-primary opacity-60" strokeWidth={1.5} />
+      </div>
+    )
+  }
 
   return (
     <img
-      src={src}
+      src={cover}
       alt={`Cover of ${title}`}
       className="w-13 h-19 rounded-lg shadow-card shrink-0 object-cover"
       onError={() => setFailed(true)}
@@ -60,7 +41,7 @@ function BookCard({ book }) {
 
   return (
     <article className="bg-surface rounded-2xl shadow-card p-5 flex gap-4">
-      <BookCover title={book.title} author={book.author} />
+      <BookCover title={book.title} cover={book.cover} />
       <div className="flex flex-col flex-1 min-w-0">
         <h2 className="font-display text-[17px] leading-snug text-ink">{book.title}</h2>
         <p className="text-xs text-muted mt-0.5 font-medium">
